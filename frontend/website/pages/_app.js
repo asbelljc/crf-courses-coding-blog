@@ -10,6 +10,8 @@ import '../styles/pages/homepage.css';
 import '../styles/pages/blog-posts.css';
 import '../styles/pages/post.css';
 import '../styles/pages/contact.css';
+import '../styles/pages/about.css';
+import '../styles/pages/_error.css';
 
 // prismjs (code block) styles
 import '../styles/prismjs.css';

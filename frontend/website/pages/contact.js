@@ -10,8 +10,8 @@ export default function Contact() {
           <h1>Contact</h1>
           <p>
             Hi, I’m Jonathan, a full stack software engineer based out of
-            Western North Carolina. I build apps primarily with JavaScript and
-            Python and write about my experiences here.
+            Western North Carolina. I build apps with JavaScript and Python and
+            write about my experiences here.
           </p>
           <p>
             If you have any comments, ideas, critiques, or you just want to say
