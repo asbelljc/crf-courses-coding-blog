@@ -1,9 +1,14 @@
 import Header from '../components/header';
 import Footer from '../components/footer';
+import HeadMetadata from '../components/headMetadata';
 
 export default function Contact() {
   return (
     <div className="layout-wrapper">
+      <HeadMetadata
+        title="Contact | Coding Blog"
+        metaDescription="If you have any comments, ideas, critiques, or you just want to say hi, you can contact me via email or the links listed below."
+      />
       <Header />
       <div className="contact-container">
         <div className="contact-section">

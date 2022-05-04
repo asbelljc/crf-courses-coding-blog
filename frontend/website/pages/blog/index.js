@@ -1,9 +1,14 @@
 import Header from '../../components/header';
 import Footer from '../../components/footer';
+import HeadMetadata from '../../components/headMetadata';
 
 export default function Blog() {
   return (
     <div className="layout-wrapper">
+      <HeadMetadata
+        title="Blog Posts | Coding Blog"
+        metaDescription="List of all blog posts published on the Jonathan Asbell coding blog."
+      />
       <Header />
       <div className="blog-posts-container">
         <h1>Blog posts</h1>

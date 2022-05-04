@@ -1,9 +1,14 @@
 import Header from '../../../components/header';
 import Footer from '../../../components/footer';
+import HeadMetadata from '../../../components/headMetadata';
 
 export default function PostsByTag({ tag }) {
   return (
     <div className="layout-wrapper">
+      <HeadMetadata
+        title={`Blog posts tagged as "${tag}" | Coding Blog`}
+        metaDescription={`All blog posts tagged as "${tag}".`}
+      />
       <Header />
       <div className="blog-posts-container">
         <h1>

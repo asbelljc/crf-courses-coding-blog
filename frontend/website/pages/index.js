@@ -1,9 +1,14 @@
 import Header from '../components/header';
 import Footer from '../components/footer';
+import HeadMetadata from '../components/headMetadata';
 
 export default function Homepage() {
   return (
     <div className="layout-wrapper">
+      <HeadMetadata
+        title="Coding Blog"
+        metaDescription="Jonathan Asbell is a full-stack software developer that also writes about modern JavaScript and Python."
+      />
       <Header />
       <div className="homepage-container">
         <div className="homepage-introduction">
