@@ -2,7 +2,9 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import HeadMetadata from '../components/headMetadata';
 
-export default function Homepage() {
+import getFiveNewestPosts from '../api/getFiveNewestPosts';
+
+export default function Homepage({ posts }) {
   return (
     <div className="layout-wrapper">
       <HeadMetadata
@@ -28,56 +30,20 @@ export default function Homepage() {
             </a>
           </h2>
           <div className="homepage-latest-blog-posts-list">
-            <a href="/blog/post-title">
-              <div className="homepage-latest-blog-post">
-                <div className="homepage-latest-thumbnail">
-                  <img src="https://assets.coderrocketfuel.com/coding-blog-nodejs-thumbnail.png" />
-                </div>
-                <div className="homepage-latest-blog-post-title">
-                  <h3>Your Blog Post Title</h3>
-                </div>
-              </div>
-            </a>
-            <a href="/blog/post-title">
-              <div className="homepage-latest-blog-post">
-                <div className="homepage-latest-thumbnail">
-                  <img src="https://assets.coderrocketfuel.com/coding-blog-nodejs-thumbnail.png" />
-                </div>
-                <div className="homepage-latest-blog-post-title">
-                  <h3>Your Blog Post Title</h3>
-                </div>
-              </div>
-            </a>
-            <a href="/blog/post-title">
-              <div className="homepage-latest-blog-post">
-                <div className="homepage-latest-thumbnail">
-                  <img src="https://assets.coderrocketfuel.com/coding-blog-nodejs-thumbnail.png" />
-                </div>
-                <div className="homepage-latest-blog-post-title">
-                  <h3>Your Blog Post Title</h3>
-                </div>
-              </div>
-            </a>
-            <a href="/blog/post-title">
-              <div className="homepage-latest-blog-post">
-                <div className="homepage-latest-thumbnail">
-                  <img src="https://assets.coderrocketfuel.com/coding-blog-nodejs-thumbnail.png" />
-                </div>
-                <div className="homepage-latest-blog-post-title">
-                  <h3>Your Blog Post Title</h3>
-                </div>
-              </div>
-            </a>
-            <a href="/blog/post-title">
-              <div className="homepage-latest-blog-post">
-                <div className="homepage-latest-thumbnail">
-                  <img src="https://assets.coderrocketfuel.com/coding-blog-nodejs-thumbnail.png" />
-                </div>
-                <div className="homepage-latest-blog-post-title">
-                  <h3>Your Blog Post Title</h3>
-                </div>
-              </div>
-            </a>
+            {posts
+              ? posts.map((post, index) => (
+                  <a key={index} href={`/blog/${post.urlTitle}`}>
+                    <div className="homepage-latest-blog-post">
+                      <div className="homepage-latest-thumbnail">
+                        <img src={post.thumbnailImageUrl} />
+                      </div>
+                      <div className="homepage-latest-blog-post-title">
+                        <h3>{post.title}</h3>
+                      </div>
+                    </div>
+                  </a>
+                ))
+              : null}
           </div>
         </div>
         <div className="homepage-projects">
@@ -148,4 +114,15 @@ export default function Homepage() {
       <Footer />
     </div>
   );
+}
+
+// TODO: give this error handling like /pages/blog/index???
+export async function getServerSideProps() {
+  const apiResult = await getFiveNewestPosts();
+
+  return {
+    props: {
+      posts: (apiResult && apiResult.posts) || null,
+    },
+  };
 }

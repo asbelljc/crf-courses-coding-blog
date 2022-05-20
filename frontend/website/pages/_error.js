@@ -28,7 +28,7 @@ export default function Error({ statusCode }) {
   );
 }
 
-export async function getServerSideProps({ req, res, error }) {
+export async function getServerSideProps({ req, res, err }) {
   const statusCode = res ? res.statusCode : err ? err.statusCode : null;
 
   return {
