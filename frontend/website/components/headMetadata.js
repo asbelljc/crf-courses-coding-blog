@@ -29,6 +29,7 @@ export default function HeadMetadata({ title, metaDescription }) {
         name="google-site-verification"
         content={process.env.GOOGLE_VERIFICATION_ID}
       />
+      <meta name="msvalidate.01" content={process.env.BING_VERIFICATION_ID} />
     </Head>
   );
 }
