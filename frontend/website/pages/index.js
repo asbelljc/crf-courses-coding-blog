@@ -1,6 +1,7 @@
 import Header from '../components/header';
 import Footer from '../components/footer';
 import HeadMetadata from '../components/headMetadata';
+import GoogleAnalytics from '../components/googleAnalytics';
 
 import getFiveNewestPosts from '../api/getFiveNewestPosts';
 
@@ -11,6 +12,7 @@ export default function Homepage({ posts }) {
         title="Coding Blog"
         metaDescription="Jonathan Asbell is a full-stack software developer that also writes about modern JavaScript and Python."
       />
+      <GoogleAnalytics />
       <Header />
       <div className="homepage-container">
         <div className="homepage-introduction">

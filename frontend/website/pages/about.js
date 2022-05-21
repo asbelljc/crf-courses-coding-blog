@@ -1,6 +1,7 @@
 import Header from '../components/header';
 import Footer from '../components/footer';
 import HeadMetadata from '../components/headMetadata';
+import GoogleAnalytics from '../components/googleAnalytics';
 
 export default function About() {
   return (
@@ -9,6 +10,7 @@ export default function About() {
         title="About Me | Coding Blog"
         metaDescription="Jonathan Asbell is a full stack software developer that also writes about modern JavaScript and Python."
       />
+      <GoogleAnalytics />
       <Header />
       <div className="about-container">
         <div className="about-section">

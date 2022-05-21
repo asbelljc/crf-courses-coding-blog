@@ -3,6 +3,7 @@ import moment from 'moment';
 import Header from '../../../components/header';
 import Footer from '../../../components/footer';
 import HeadMetadata from '../../../components/headMetadata';
+import GoogleAnalytics from '../../../components/googleAnalytics';
 
 import getBlogPostsByTag from '../../../api/getBlogPostsByTag';
 
@@ -13,6 +14,7 @@ export default function PostsByTag({ posts, tag, getDataError }) {
         title={`Blog posts tagged as "${tag}" | Coding Blog`}
         metaDescription={`All blog posts tagged as "${tag}".`}
       />
+      <GoogleAnalytics />
       <Header />
       <div className="blog-posts-container">
         <h1>

@@ -1,6 +1,7 @@
 import Header from '../components/header';
 import Footer from '../components/footer';
 import HeadMetadata from '../components/headMetadata';
+import GoogleAnalytics from '../components/googleAnalytics';
 
 export default function Contact() {
   return (
@@ -9,6 +10,7 @@ export default function Contact() {
         title="Contact | Coding Blog"
         metaDescription="If you have any comments, ideas, critiques, or you just want to say hi, you can contact me via email or the links listed below."
       />
+      <GoogleAnalytics />
       <Header />
       <div className="contact-container">
         <div className="contact-section">

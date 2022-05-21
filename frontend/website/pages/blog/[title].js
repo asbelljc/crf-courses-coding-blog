@@ -7,10 +7,11 @@ import 'prismjs/plugins/line-numbers/prism-line-numbers.js';
 import 'prismjs/plugins/normalize-whitespace/prism-normalize-whitespace.js';
 
 import Header from '../../components/header';
-import getBlogPostByUrlTitle from '../../api/getBlogPostByUrlTitle';
-
 import Footer from '../../components/footer';
 import HeadMetadata from '../../components/headMetadata';
+import GoogleAnalytics from '../../components/googleAnalytics';
+
+import getBlogPostByUrlTitle from '../../api/getBlogPostByUrlTitle';
 
 export default function Post({ post, getDataError, notFoundError }) {
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function Post({ post, getDataError, notFoundError }) {
         title={post ? post.seoTitleTag : 'Blog Post | Coding Blog'}
         metaDescription={post && post.seoMetaDescription}
       />
+      <GoogleAnalytics />
       <Header />
       <div className="blog-post-container">
         {post && !getDataError && !notFoundError ? (

@@ -1,11 +1,13 @@
 import Header from '../components/header';
 import Footer from '../components/footer';
 import HeadMetadata from '../components/headMetadata';
+import GoogleAnalytics from '../components/googleAnalytics';
 
 export default function Error({ statusCode }) {
   return (
     <div className="layout-wrapper">
       <HeadMetadata title="Error | Coding Blog" />
+      <GoogleAnalytics />
       <Header />
       <div className="error-container">
         {statusCode === 404 ? (

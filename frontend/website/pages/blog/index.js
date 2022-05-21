@@ -3,6 +3,7 @@ import moment from 'moment';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
 import HeadMetadata from '../../components/headMetadata';
+import GoogleAnalytics from '../../components/googleAnalytics';
 
 import getAllBlogPosts from '../../api/getAllBlogPosts';
 
@@ -13,6 +14,7 @@ export default function Blog({ posts, getDataError }) {
         title="Blog Posts | Coding Blog"
         metaDescription="List of all blog posts published on the Jonathan Asbell coding blog."
       />
+      <GoogleAnalytics />
       <Header />
       <div className="blog-posts-container">
         <h1>Blog posts</h1>
