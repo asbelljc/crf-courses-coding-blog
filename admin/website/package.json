@@ -1,0 +1,22 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/react": "^18.0.9",
+    "codemirror": "^5.65.4",
+    "moment": "^2.29.3",
+    "next": "^12.1.6",
+    "react": "^18.1.0",
+    "react-codemirror2": "^7.2.1"
+  }
+}
