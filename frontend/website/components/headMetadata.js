@@ -25,6 +25,10 @@ export default function HeadMetadata({ title, metaDescription }) {
       <meta name="theme-color" content="#ffffff" />
       <title>{title}</title>
       <meta name="description" content={metaDescription} />
+      <meta
+        name="google-site-verification"
+        content={process.env.GOOGLE_VERIFICATION_ID}
+      />
     </Head>
   );
 }
