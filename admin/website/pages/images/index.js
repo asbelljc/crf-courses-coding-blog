@@ -3,7 +3,9 @@ import Head from 'next/head';
 import Header from '../../components/header.js';
 import Sidebar from '../../components/sidebar.js';
 
-export default function Images() {
+import getAllImages from '../../api/images/getAllImages.js';
+
+export default function Images({ images, getDataError }) {
   return (
     <div className="layout-wrapper">
       <Head>
@@ -12,7 +14,7 @@ export default function Images() {
       <Header />
       <Sidebar page="images" />
       <div className="layout-content-container">
-        {
+        {!getDataError ? (
           <div className="images-content">
             <div className="images-top-header">
               <div className="images-page-header-label">
@@ -39,37 +41,61 @@ export default function Images() {
                     <span></span>
                   </div>
                 </div>
-                <div className="images-list-items-table-item">
-                  <div className="images-list-items-table-item-data filename">
-                    <span>Image Filename</span>
-                  </div>
-                  <div className="images-list-items-table-item-data link">
-                    {process.env.NODE_ENV === 'development' ? (
-                      <a
-                        href={`${process.env.DEV_ADMIN_API_URL}/assets/image-filename`}
-                      >
-                        <span>Link</span>
-                      </a>
-                    ) : (
-                      <a
-                        href={`${process.env.PRODUCTION_FRONTEND_API_URL}/assets/image-filename`}
-                      >
-                        <span>Link</span>
-                      </a>
-                    )}
-                  </div>
-                  <div className="images-list-items-table-item-data edit">
-                    <a href="/images/edit/filename.png">
-                      <span>Edit</span>
-                    </a>
-                    <span> &gt;</span>
-                  </div>
-                </div>
+                {images.map((image, index) => {
+                  return (
+                    <div key={index} className="images-list-items-table-item">
+                      <div className="images-list-items-table-item-data filename">
+                        <span>{image}</span>
+                      </div>
+                      <div className="images-list-items-table-item-data link">
+                        {process.env.NODE_ENV === 'development' ? (
+                          <a
+                            href={`${process.env.DEV_FRONTEND_API_URL}/assets/${image}`}
+                          >
+                            <span>Link</span>
+                          </a>
+                        ) : (
+                          <a
+                            href={`${process.env.PRODUCTION_FRONTEND_API_URL}/assets/${image}`}
+                          >
+                            <span>Link</span>
+                          </a>
+                        )}
+                      </div>
+                      <div className="images-list-items-table-item-data edit">
+                        <a href={`/images/edit/${image}`}>
+                          <span>Edit</span>
+                        </a>
+                        <span> &gt;</span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
-        }
+        ) : (
+          <div className="images-get-data-error">
+            <span>An error occurred.</span>
+          </div>
+        )}
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps({ req, res }) {
+  const apiResult = await getAllImages(req);
+
+  if (!apiResult.authSuccess) {
+    res.writeHead(302, { Location: '/login' });
+    res.end();
+  }
+
+  return {
+    props: {
+      images: (apiResult && apiResult.files) || [],
+      getDataError: (apiResult && apiResult.getDataError) || null,
+    },
+  };
 }

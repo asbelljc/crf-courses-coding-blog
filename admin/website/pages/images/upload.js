@@ -5,6 +5,11 @@ import Head from 'next/head';
 import Header from '../../components/header.js';
 import Sidebar from '../../components/sidebar.js';
 
+import authUser from '../../api/admin-user/auth.js';
+
+import checkIfImageFilenameExists from '../../api/images/checkIfImageFilenameExists.js';
+import uploadImage from '../../api/images/uploadImage.js';
+
 export default function UploadImage() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -21,7 +26,76 @@ export default function UploadImage() {
   const requestImageUpload = (e) => {
     e.preventDefault();
 
-    // api request goes here
+    let formData = new FormData();
+    formData.append('selectedFile', selectedFile);
+
+    if (!selectedFile) {
+      setLoading(false);
+      setSubmissionError(false);
+      setFilenameExistsError(false);
+      setNoFileError(true);
+      setFilenameSpacesError(false);
+      setSuccess(false);
+    } else if (selectedFile.name.indexOf(' ') !== -1) {
+      setLoading(false);
+      setSubmissionError(false);
+      setFilenameExistsError(false);
+      setNoFileError(false);
+      setFilenameSpacesError(true);
+      setSuccess(false);
+    } else {
+      setLoading(true);
+      setSubmissionError(false);
+      setFilenameExistsError(false);
+      setNoFileError(false);
+      setFilenameSpacesError(false);
+      setSuccess(false);
+
+      checkIfImageFilenameExists(selectedFile.name, function (existsResponse) {
+        if (!existsResponse.success) {
+          setLoading(false);
+          setSubmissionError(false);
+          setFilenameExistsError(true);
+          setNoFileError(false);
+          setFilenameSpacesError(false);
+          setSuccess(false);
+        } else {
+          uploadImage(formData, function (apiResponse) {
+            if (apiResponse.submitError) {
+              setLoading(false);
+              setSubmissionError(true);
+              setFilenameExistsError(false);
+              setNoFileError(false);
+              setFilenameSpacesError(false);
+              setSuccess(false);
+            } else if (!apiResponse.authSuccess) {
+              window.location.href = '/login';
+            } else if (apiResponse.noFileError) {
+              setLoading(false);
+              setSubmissionError(false);
+              setFilenameExistsError(false);
+              setNoFileError(true);
+              setFilenameSpacesError(false);
+              setSuccess(false);
+            } else if (!apiResponse.success) {
+              setLoading(false);
+              setSubmissionError(true);
+              setFilenameExistsError(false);
+              setNoFileError(false);
+              setFilenameSpacesError(false);
+              setSuccess(false);
+            } else {
+              setLoading(false);
+              setSubmissionError(false);
+              setFilenameExistsError(false);
+              setNoFileError(false);
+              setFilenameSpacesError(false);
+              setSuccess(true);
+            }
+          });
+        }
+      });
+    }
   };
 
   return (
@@ -93,4 +167,15 @@ export default function UploadImage() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps({ req, res }) {
+  const authResult = await authUser(req);
+
+  if (!authResult.success) {
+    res.writeHead(302, { Location: '/login' });
+    res.end();
+  }
+
+  return { props: {} };
 }

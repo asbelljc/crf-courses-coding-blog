@@ -4,6 +4,9 @@ import { useState } from 'react';
 import Header from '../components/header.js';
 import Sidebar from '../components/sidebar.js';
 
+import authUser from '../api/admin-user/auth.js';
+import changePassword from '../api/admin-user/changePassword.js';
+
 export default function ChangePassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -28,9 +31,48 @@ export default function ChangePassword() {
   };
 
   const requestChangeSubmission = () => {
-    setLoading(true);
-    setError(false);
-    setSuccess(false);
+    if (!currentPasswordInputValue) {
+      setError(true);
+      setErrorMsg('Current password field is required.');
+      setSuccess(false);
+    } else if (!newPasswordInputValue) {
+      setError(true);
+      setErrorMsg('New password field is required.');
+      setSuccess(false);
+    } else if (newPasswordInputValue !== confirmNewPasswordInputValue) {
+      setError(true);
+      setErrorMsg('New password values do not match.');
+      setSuccess(false);
+    } else {
+      setLoading(true);
+      setError(false);
+      setErrorMsg(''); // NOTE: if bugs arise, this was originally 'false'
+      setSuccess(false);
+
+      changePassword(
+        currentPasswordInputValue,
+        newPasswordInputValue,
+        function (apiResponse) {
+          if (apiResponse.submitError) {
+            setLoading(false);
+            setError(true);
+            setErrorMsg('An error occurred.');
+            setSuccess(false);
+          } else if (apiResponse.invalidPasswordCredentialError) {
+            setLoading(false);
+            setError(true);
+            setErrorMsg('Current password credential is invalid.');
+            setSuccess(false);
+          } else if (!apiResponse.authSuccess) {
+            window.location.href = '/login';
+          } else {
+            setLoading(false);
+            setError(false);
+            setSuccess(true);
+          }
+        }
+      );
+    }
   };
 
   return (
@@ -116,4 +158,15 @@ export default function ChangePassword() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps({ req, res }) {
+  const authResult = await authUser(req);
+
+  if (!authResult.success) {
+    res.writeHead(302, { Location: '/login' });
+    res.end();
+  }
+
+  return { props: {} };
 }

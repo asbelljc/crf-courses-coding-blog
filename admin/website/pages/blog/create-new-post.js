@@ -6,6 +6,9 @@ import { Controlled as CodeMirror } from 'react-codemirror2';
 import Header from '../../components/header.js';
 import Sidebar from '../../components/sidebar.js';
 
+import authUser from '../../api/admin-user/auth.js';
+import createNewPost from '../../api/blog-posts/createNewPost.js';
+
 if (typeof navigator !== 'undefined') {
   require('codemirror/mode/markdown/markdown');
 }
@@ -84,10 +87,62 @@ export default function CreateNewPost() {
     setMetaDescCharLeft(charLeft);
   };
 
-  const submitCreateNewPostRequest = () => {
-    setSubmissionError(false);
-    setErrorMsg('');
-    setLoading(true);
+  const requestCreateNewPostSubmission = () => {
+    if (!titleInputValue) {
+      setSubmissionError(true);
+      setErrorMsg('Title field is required.');
+    } else if (!urlTitleInputValue) {
+      setSubmissionError(true);
+      setErrorMsg('URL title field is required.');
+    } else if (!dateInputValue) {
+      setSubmissionError(true);
+      setErrorMsg('Date field is required.');
+    } else if (!tagsInputValue) {
+      setSubmissionError(true);
+      setErrorMsg('Tags field is required.');
+    } else if (!imageUrlInputValue) {
+      setSubmissionError(true);
+      setErrorMsg('Image URL field is required.');
+    } else if (!markdownInputValue) {
+      setSubmissionError(true);
+      setErrorMsg('Markdown content field is required.');
+    } else if (!seoTitleTagInputValue) {
+      setSubmissionError(true);
+      setErrorMsg('SEO title field is required.');
+    } else if (!metaDescInputValue) {
+      setSubmissionError(true);
+      setErrorMsg('Meta description field is required.');
+    } else {
+      setSubmissionError(false);
+      setErrorMsg('');
+      setLoading(true);
+
+      createNewPost(
+        titleInputValue,
+        urlTitleInputValue,
+        moment(dateInputValue).valueOf() / 1000,
+        tagsInputValue,
+        imageUrlInputValue,
+        markdownInputValue,
+        seoTitleTagInputValue,
+        metaDescInputValue,
+        function (apiResponse) {
+          if (!apiResponse.authSuccess) {
+            window.location.href = '/login';
+          } else if (apiResponse.alreadyExistsError) {
+            setSubmissionError(true);
+            setErrorMsg('Blog post with that title already exists.');
+            setLoading(false);
+          } else if (apiResponse.submissionError || !apiResponse.success) {
+            setSubmissionError(true);
+            setErrorMsg('An error occurred.');
+            setLoading(false);
+          } else {
+            window.location.href = '/';
+          }
+        }
+      );
+    }
   };
 
   return (
@@ -244,7 +299,7 @@ export default function CreateNewPost() {
             <div className="create-blog-post-form-btn-container">
               {!loading ? (
                 <div
-                  onClick={submitCreateNewPostRequest}
+                  onClick={requestCreateNewPostSubmission}
                   className="create-blog-post-form-btn"
                 >
                   <span>Submit</span>
@@ -265,4 +320,15 @@ export default function CreateNewPost() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps({ req, res }) {
+  const authResult = await authUser(req);
+
+  if (!authResult.success) {
+    res.writeHead(302, { Location: '/login' });
+    res.end();
+  }
+
+  return { props: {} };
 }

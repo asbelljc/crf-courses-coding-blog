@@ -5,6 +5,11 @@ import Head from 'next/head';
 import Header from '../components/header.js';
 import Sidebar from '../components/sidebar.js';
 
+import authUser from '../api/admin-user/auth.js';
+import updateSitemap from '../api/sitemap/updateSitemap.js';
+import restartPm2Process from '../api/sitemap/restartPm2Process.js';
+import pingSearchEngines from '../api/sitemap/pingSearchEngines.js';
+
 export default function Sitemap() {
   // update sitemap
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
@@ -24,7 +29,23 @@ export default function Sitemap() {
     setIsUpdateError(false);
     setIsUpdateSuccess(false);
 
-    // call update sitemap function
+    updateSitemap(function (apiResponse) {
+      if (apiResponse.submitError) {
+        setIsUpdateLoading(false);
+        setIsUpdateError(true);
+        setIsUpdateSuccess(false);
+      } else if (!apiResponse.authSuccess) {
+        window.location.href = '/login';
+      } else if (!apiResponse.success) {
+        setIsUpdateLoading(false);
+        setIsUpdateError(true);
+        setIsUpdateSuccess(false);
+      } else {
+        setIsUpdateLoading(false);
+        setIsUpdateError(false);
+        setIsUpdateSuccess(true);
+      }
+    });
   };
 
   const requestPm2Restart = () => {
@@ -32,7 +53,23 @@ export default function Sitemap() {
     setPm2RestartError(false);
     setPm2RestartSuccess(false);
 
-    // call restart PM2 function
+    restartPm2Process(function (apiResponse) {
+      if (apiResponse.submitError) {
+        setPm2RestartLoading(false);
+        setPm2RestartError(true);
+        setPm2RestartSuccess(false);
+      } else if (!apiResponse.authSuccess) {
+        window.location.href = '/login';
+      } else if (!apiResponse.success) {
+        setPm2RestartLoading(false);
+        setPm2RestartError(true);
+        setPm2RestartSuccess(false);
+      } else {
+        setPm2RestartLoading(false);
+        setPm2RestartError(false);
+        setPm2RestartSuccess(true);
+      }
+    });
   };
 
   const requestSearchEnginesPing = () => {
@@ -40,7 +77,23 @@ export default function Sitemap() {
     setIsPingError(false);
     setIsPingSuccess(false);
 
-    // call ping search engines function
+    pingSearchEngines(function (apiResponse) {
+      if (apiResponse.submitError) {
+        setIsPingLoading(false);
+        setIsPingError(true);
+        setIsPingSuccess(false);
+      } else if (!apiResponse.authSuccess) {
+        window.location.href = '/login';
+      } else if (!apiResponse.success) {
+        setIsPingLoading(false);
+        setIsPingError(true);
+        setIsPingSuccess(false);
+      } else {
+        setIsPingLoading(false);
+        setIsPingError(false);
+        setIsPingSuccess(true);
+      }
+    });
   };
 
   return (
@@ -163,4 +216,15 @@ export default function Sitemap() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps({ req, res }) {
+  const authResult = await authUser(req);
+
+  if (!authResult.success) {
+    res.writeHead(302, { Location: '/login' });
+    res.end();
+  }
+
+  return { props: {} };
 }

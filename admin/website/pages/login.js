@@ -1,5 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
+
+import login from '../api/admin-user/login';
+import authUser from '../api/admin-user/auth.js';
+import removeAdminUserCookie from '../api/admin-user/removeAdminUserCookie';
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
@@ -8,6 +12,10 @@ export default function Login() {
   const [emailRequiredError, setEmailRequiredError] = useState(false);
   const [passwordInputValue, setPasswordInputValue] = useState('');
   const [passwordRequiredError, setPasswordRequiredError] = useState(false);
+
+  useEffect(() => {
+    removeAdminUserCookie();
+  }, []);
 
   const updateEmailInputValue = (e) => {
     setEmailInputValue(e.target.value);
@@ -19,8 +27,28 @@ export default function Login() {
     setPasswordRequiredError(false);
   };
 
-  const submitLoginRequest = () => {
-    setLoading(true);
+  const requestLogin = () => {
+    if (!emailInputValue || !passwordInputValue) {
+      if (!emailInputValue) {
+        setEmailRequiredError(true);
+      }
+      if (!passwordInputValue) {
+        setPasswordRequiredError(true);
+      }
+    } else {
+      setLoading(true);
+
+      login(emailInputValue, passwordInputValue, function (apiResponse) {
+        if (!apiResponse.success) {
+          setLoading(false);
+          setCredentialError(true);
+          setEmailRequiredError(false);
+          setPasswordRequiredError(false);
+        } else {
+          window.location.href = '/';
+        }
+      });
+    }
   };
 
   return (
@@ -75,10 +103,7 @@ export default function Login() {
             </div>
             <div className="login-form-submit-btn-container">
               {!loading ? (
-                <div
-                  onClick={submitLoginRequest}
-                  className="login-form-submit-btn"
-                >
+                <div onClick={requestLogin} className="login-form-submit-btn">
                   <span>Login</span>
                 </div>
               ) : (
@@ -92,4 +117,15 @@ export default function Login() {
       </div>
     </div>
   );
+}
+
+export async function getServerSideProps({ req, res }) {
+  const authResult = await authUser(req);
+
+  if (authResult.success) {
+    res.writeHead(302, { Location: '/' });
+    res.end();
+  }
+
+  return { props: {} };
 }

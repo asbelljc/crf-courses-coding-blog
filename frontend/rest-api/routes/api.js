@@ -64,7 +64,7 @@ module.exports = {
         callback({ notFoundError: true });
       } else {
         const markdownConverter = new showdown.Converter();
-        post.markdownContent = markdownConverter.makeHtml(post.markdowncontent);
+        post.markdownContent = markdownConverter.makeHtml(post.markdownContent);
 
         callback({ success: true, post });
       }
